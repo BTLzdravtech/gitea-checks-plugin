@@ -39,8 +39,7 @@ public class GiteaPublisherFactory extends ChecksPublisherFactory {
     @Override
     protected Optional<ChecksPublisher> createPublisher(final Run<?, ?> run, final TaskListener listener) {
         final String runURL = urlProvider.getRunURL(run);
-        return createPublisher(listener, GiteaSCMSourceChecksContext.fromRun(run, runURL, scmFacade),
-                new GitSCMChecksContext(run, runURL, scmFacade));
+        return createPublisher(listener, GiteaSCMSourceChecksContext.fromRun(run, runURL, scmFacade));
     }
 
     @Override

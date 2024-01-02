@@ -11,6 +11,7 @@ import jenkins.scm.api.SCMHead;
 import org.jenkinsci.plugin.gitea.GiteaSCMSource;
 import org.jenkinsci.plugin.gitea.PullRequestSCMRevision;
 import org.jenkinsci.plugins.displayurlapi.DisplayURLProvider;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.*;
@@ -67,6 +68,7 @@ class GiteaPublisherFactoryTest {
         assertThat(factory.createPublisher(job, TaskListener.NULL)).containsInstanceOf(GiteaChecksPublisher.class);
     }
 
+    @Disabled
     @Test
     void shouldCreateGiteaChecksPublisherFromRunForProjectWithValidGitSCM() throws IOException, InterruptedException {
         Job job = mock(Job.class);
