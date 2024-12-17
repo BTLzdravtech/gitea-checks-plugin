@@ -5,8 +5,8 @@ import edu.hm.hafner.util.FilteredLog;
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 import hudson.model.Job;
 import hudson.model.Run;
-import org.apache.commons.lang3.StringUtils;
 import java.util.Optional;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Base class for a context that publishes Gitea checks.
@@ -35,13 +35,14 @@ public abstract class GiteaChecksContext {
      * @return the source repository's owner name
      */
     public abstract String getRepoOwner();
+
     /**
      * Returns the source repository's name of the run. The name consists of the repository's name, e.g. jenkins
      *
      * @return the source repository's name
      */
     public abstract String getRepo();
-    
+
     /**
      * Returns the source repository's server URL of the run.
      *
@@ -75,7 +76,7 @@ public abstract class GiteaChecksContext {
      * @return the credentials
      */
     public StandardCredentials getCredentials() {
-        return getGiteaAppCredentials(getCredentialsId());
+        return getGiteaAppCredentials(StringUtils.defaultIfEmpty(getCredentialsId(), ""));
     }
 
     /**
@@ -95,14 +96,15 @@ public abstract class GiteaChecksContext {
         return scmFacade;
     }
 
-
     protected StandardCredentials getGiteaAppCredentials(final String credentialsId) {
-        return findGiteaAppCredentials(credentialsId).orElseThrow(() ->
-                new IllegalStateException("No Gitea APP credentials available for job: " + getJob().getName()));
+        return findGiteaAppCredentials(credentialsId)
+                .orElseThrow(() ->
+                        new IllegalStateException("No Gitea APP credentials available for job: " + getJob().getName()));
     }
 
     protected boolean hasGiteaAppCredentials() {
-        return findGiteaAppCredentials(StringUtils.defaultIfEmpty(getCredentialsId(), "")).isPresent();
+        return findGiteaAppCredentials(StringUtils.defaultIfEmpty(getCredentialsId(), ""))
+                .isPresent();
     }
 
     protected boolean hasCredentialsId() {

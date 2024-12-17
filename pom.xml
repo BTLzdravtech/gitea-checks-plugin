@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.jvnet.hudson.plugins</groupId>
     <artifactId>analysis-pom</artifactId>
-    <version>4.7.0</version>
+    <version>9.0.0</version>
     <relativePath />
   </parent>
 
@@ -15,194 +15,179 @@
   <packaging>hpi</packaging>
 
   <name>Gitea Checks plugin</name>
-  <description>Allows users to publish Gitea commit checks</description>
-
-  <properties>
-    <java.level>8</java.level>
-    <changelist>449.v0672c320ee47-BTL</changelist>
-
-    <useBeta>true</useBeta>
-
-    <!-- Jenkins Plug-in Dependencies Versions -->
-    <checks-api.version>1.5.0</checks-api.version>
-    <plugin-util-api.version>1.7.1</plugin-util-api.version>
-    <gitea.version>1.2.1</gitea.version>
-
-    <!-- Test Library Dependencies Versions -->
-    <jetty.version>9.4.36.v20210114</jetty.version>
-    <jackson.version>2.12.1</jackson.version>
-    <wiremock.version>2.33.1</wiremock.version>
-    <guava.version>29.0-jre</guava.version>
-    <asm.version>9.1</asm.version>
-    <json-unit-core.version>2.34.0</json-unit-core.version>
-    <http-client.version>4.5.13</http-client.version>
-  </properties>
+  <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
 
   <licenses>
     <license>
       <name>MIT License</name>
-      <url>https://opensource.org/licenses/MIT</url>
+      <url>https://opensource.org/licenses/mit</url>
+      <distribution>repo</distribution>
     </license>
   </licenses>
 
-  <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
+  <developers>
+    <developer>
+      <id>xiongkezhi</id>
+      <name>Kezhi Xiong</name>
+      <email>august.xkz@gmail.com</email>
+    </developer>
+    <developer>
+      <id>flozzone</id>
+      <name>Florin Hillebrand</name>
+      <email>flozzone@gmail.com</email>
+    </developer>
+    <developer>
+      <id>viceice</id>
+      <name>Michael Kriese</name>
+    </developer>
+  </developers>
+
   <scm>
-    <connection>scm:git:git://github.com/jenkinsci/${project.artifactId}-plugin.git</connection>
+    <connection>scm:git:https://github.com/jenkinsci/${project.artifactId}-plugin.git</connection>
     <developerConnection>scm:git:git@github.com:jenkinsci/${project.artifactId}-plugin.git</developerConnection>
+    <tag>${scmTag}</tag>
     <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
-    <tag>v1.0.0</tag>
   </scm>
+
+  <properties>
+    <changelist>999999-SNAPSHOT</changelist>
+    <jenkins.baseline>2.462</jenkins.baseline>
+    <jenkins.version>${jenkins.baseline}.3</jenkins.version>
+
+    <!-- TODO: fix me -->
+    <revapi.skip>true</revapi.skip>
+
+    <!-- Jenkins Plug-in Dependencies Versions -->
+    <gitea.version>220.v4618c82a_40fb_</gitea.version>
+
+    <!-- Test Library Dependencies Versions -->
+    <wiremock.version>3.10.0</wiremock.version>
+    <testcontainers.version>1.20.4</testcontainers.version>
+
+    <spotless.check.skip>false</spotless.check.skip>
+    <checkstyle.skip>true</checkstyle.skip>
+    <pmd.printFailingErrors>true</pmd.printFailingErrors>
+  </properties>
 
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-client</artifactId>
-        <version>${jetty.version}</version>
+        <groupId>io.jenkins.tools.bom</groupId>
+        <artifactId>bom-${jenkins.baseline}.x</artifactId>
+        <version>3814.v9563d972079a_</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
 
   <dependencies>
-    <dependency>
-      <groupId>io.jenkins.plugins</groupId>
-      <artifactId>plugin-util-api</artifactId>
-      <version>${plugin-util-api.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.jenkins.plugins</groupId>
-      <artifactId>plugin-util-api</artifactId>
-      <version>${plugin-util-api.version}</version>
-      <scope>test</scope>
-      <type>test-jar</type>
-    </dependency>
 
-    <!-- Jenkins Plugin Dependencies -->
     <dependency>
       <groupId>io.jenkins.plugins</groupId>
       <artifactId>checks-api</artifactId>
-      <version>${checks-api.version}</version>
     </dependency>
+    <!-- Jenkins Plugin Dependencies -->
+
+    <dependency>
+      <groupId>io.jenkins.plugins</groupId>
+      <artifactId>plugin-util-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jenkins-ci.plugins</groupId>
+      <artifactId>credentials</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>org.jenkins-ci.plugins</groupId>
       <artifactId>gitea</artifactId>
       <version>${gitea.version}</version>
     </dependency>
+
     <dependency>
       <groupId>org.jenkins-ci.plugins.workflow</groupId>
       <artifactId>workflow-cps</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.jenkins-ci.plugins.workflow</groupId>
       <artifactId>workflow-job</artifactId>
     </dependency>
 
     <!-- Test Dependencies -->
+
     <dependency>
-      <groupId>com.github.tomakehurst</groupId>
-      <artifactId>wiremock-jre8</artifactId>
-      <version>${wiremock.version}</version>
+      <groupId>io.jenkins.plugins</groupId>
+      <artifactId>plugin-util-api</artifactId>
+      <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-core</artifactId>
-      <version>${jackson.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-      <version>${jackson.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-annotations</artifactId>
-      <version>${jackson.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-server</artifactId>
-      <version>${jetty.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-http</artifactId>
-      <version>${jetty.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-util</artifactId>
-      <version>${jetty.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-io</artifactId>
-      <version>${jetty.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-servlet</artifactId>
-      <version>${jetty.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-webapp</artifactId>
-      <version>${jetty.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.ow2.asm</groupId>
-      <artifactId>asm</artifactId>
-      <version>${asm.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>net.javacrumbs.json-unit</groupId>
-      <artifactId>json-unit-core</artifactId>
-      <version>${json-unit-core.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
-      <version>${http-client.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>20.0</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-inline</artifactId>
-      <version>${mockito.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <!-- stage -->
+
     <dependency>
       <groupId>org.jenkins-ci.plugins</groupId>
-      <artifactId>pipeline-stage-step</artifactId>
-      <version>2.5</version>
+      <artifactId>ssh-credentials</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- node -->
+
+    <dependency>
+      <groupId>org.jenkins-ci.plugins</groupId>
+      <artifactId>ssh-slaves</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jenkins-ci.plugins.workflow</groupId>
+      <artifactId>workflow-basic-steps</artifactId>
+      <scope>test</scope>
+    </dependency>
+
     <dependency>
       <groupId>org.jenkins-ci.plugins.workflow</groupId>
       <artifactId>workflow-durable-task-step</artifactId>
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.jenkinsci.plugins</groupId>
+      <artifactId>pipeline-model-definition</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>testcontainers</artifactId>
+      <version>${testcontainers.version}</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.commons</groupId>
+          <artifactId>commons-compress</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.wiremock</groupId>
+      <artifactId>wiremock-standalone</artifactId>
+      <version>${wiremock.version}</version>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
+
+  <repositories>
+    <repository>
+      <id>repo.jenkins-ci.org</id>
+      <url>https://repo.jenkins-ci.org/public/</url>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>repo.jenkins-ci.org</id>
+      <url>https://repo.jenkins-ci.org/public/</url>
+    </pluginRepository>
+  </pluginRepositories>
 
   <build>
     <plugins>
@@ -218,31 +203,5 @@
       </plugin>
     </plugins>
   </build>
-
-  <repositories>
-    <repository>
-      <id>repo.jenkins-ci.org</id>
-      <url>https://repo.jenkins-ci.org/public/</url>
-    </repository>
-  </repositories>
-  <pluginRepositories>
-    <pluginRepository>
-      <id>repo.jenkins-ci.org</id>
-      <url>https://repo.jenkins-ci.org/public/</url>
-    </pluginRepository>
-  </pluginRepositories>
-
-  <developers>
-    <developer>
-      <id>xiongkezhi</id>
-      <name>Kezhi Xiong</name>
-      <email>august.xkz@gmail.com</email>
-    </developer>
-    <developer>
-      <id>flozzone</id>
-      <name>Florin Hillebrand</name>
-      <email>flozzone@gmail.com</email>
-    </developer>
-  </developers>
 
 </project>

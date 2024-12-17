@@ -1,20 +1,18 @@
 package io.jenkins.plugins.checks.gitea;
 
+import io.jenkins.plugins.checks.api.ChecksConclusion;
+import io.jenkins.plugins.checks.api.ChecksDetails;
+import io.jenkins.plugins.checks.api.ChecksStatus;
 import java.net.URI;
 import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.Optional;
-
 import org.apache.commons.lang3.StringUtils;
-
 import org.jenkinsci.plugin.gitea.client.api.GiteaCommitState;
 
-import io.jenkins.plugins.checks.api.ChecksConclusion;
-import io.jenkins.plugins.checks.api.ChecksDetails;
-import io.jenkins.plugins.checks.api.ChecksStatus;
-
 /**
- * An adaptor which adapts the generic checks objects of {@link ChecksDetails} to the specific Gitea checks run.
+ * An adaptor which adapts the generic checks objects of {@link ChecksDetails}
+ * to the specific Gitea checks run.
  */
 class GiteaChecksDetails {
     private final ChecksDetails details;
@@ -47,7 +45,8 @@ class GiteaChecksDetails {
     }
 
     /**
-     * Returns the name of a Gitea commit status. This is displayed on a PR page on gitea, together with
+     * Returns the name of a Gitea commit status. This is displayed on a PR page on
+     * gitea, together with
      * the description.
      *
      * @return the name of the check
@@ -60,8 +59,10 @@ class GiteaChecksDetails {
      * Returns the {@link GiteaCommitState} of a Gitea check run.
      *
      * @return the status of a check run
-     * @throws IllegalArgumentException if the status of the {@code details} is not one of {@link ChecksStatus}
+     * @throws IllegalArgumentException if the status of the {@code details} is not
+     *                                  one of {@link ChecksStatus}
      */
+    @SuppressWarnings({"PMD.CyclomaticComplexity"})
     public GiteaCommitState getStatus() {
         switch (details.getStatus()) {
             case NONE:
@@ -81,7 +82,10 @@ class GiteaChecksDetails {
                         return GiteaCommitState.FAILURE;
                     case TIME_OUT:
                         return GiteaCommitState.ERROR;
+                    default:
+                        throw new IllegalArgumentException("Unsupported checks status: " + details.getStatus());
                 }
+                // fallthrough - Can't happen happen
             default:
                 throw new IllegalArgumentException("Unsupported checks status: " + details.getStatus());
         }
@@ -101,8 +105,7 @@ class GiteaChecksDetails {
             if (!StringUtils.equalsAny(URI.create(url).getScheme(), "http", "https")) {
                 throw new IllegalArgumentException("The details url is not http or https scheme: " + url);
             }
-        }
-        );
+        });
         return details.getDetailsURL();
     }
 
@@ -128,9 +131,7 @@ class GiteaChecksDetails {
     @Deprecated
     public Optional<Date> getStartedAt() {
         if (details.getStartedAt().isPresent()) {
-            return Optional.of(Date.from(
-                    details.getStartedAt().get()
-                            .toInstant(ZoneOffset.UTC)));
+            return Optional.of(Date.from(details.getStartedAt().get().toInstant(ZoneOffset.UTC)));
         }
         return Optional.empty();
     }
@@ -144,9 +145,7 @@ class GiteaChecksDetails {
     @Deprecated
     public Optional<Date> getCompletedAt() {
         if (details.getCompletedAt().isPresent()) {
-            return Optional.of(Date.from(
-                    details.getCompletedAt().get()
-                            .toInstant(ZoneOffset.UTC)));
+            return Optional.of(Date.from(details.getCompletedAt().get().toInstant(ZoneOffset.UTC)));
         }
         return Optional.empty();
     }

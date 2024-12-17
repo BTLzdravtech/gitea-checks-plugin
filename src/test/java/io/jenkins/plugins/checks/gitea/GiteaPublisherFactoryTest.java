@@ -1,12 +1,17 @@
 package io.jenkins.plugins.checks.gitea;
 
-import java.io.IOException;
-import java.util.Optional;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import com.cloudbees.plugins.credentials.common.StandardCredentials;
 import hudson.EnvVars;
+import hudson.model.Job;
+import hudson.model.Run;
+import hudson.model.TaskListener;
 import hudson.plugins.git.GitSCM;
 import hudson.plugins.git.UserRemoteConfig;
+import java.io.IOException;
+import java.util.Optional;
 import jenkins.scm.api.SCMHead;
 import org.jenkinsci.plugin.gitea.GiteaSCMSource;
 import org.jenkinsci.plugin.gitea.PullRequestSCMRevision;
@@ -14,18 +19,11 @@ import org.jenkinsci.plugins.displayurlapi.DisplayURLProvider;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
-import hudson.model.Job;
-import hudson.model.Run;
-import hudson.model.TaskListener;
-
 class GiteaPublisherFactoryTest {
     @Test
     void shouldCreateGiteaChecksPublisherFromRunForProjectWithValidGiteaSCMSource() {
-        Run run = mock(Run.class);
-        Job job = mock(Job.class);
+        var run = mock(Run.class);
+        var job = mock(Job.class);
         GiteaSCMSource source = mock(GiteaSCMSource.class);
         StandardCredentials credentials = mock(StandardCredentials.class);
         PullRequestSCMRevision revision = mock(PullRequestSCMRevision.class);
@@ -39,15 +37,14 @@ class GiteaPublisherFactoryTest {
         when(scmFacade.findRevision(source, run)).thenReturn(Optional.of(revision));
         when(scmFacade.findHash(revision)).thenReturn(Optional.of("a1b2c3"));
 
-        GiteaPublisherFactory factory = new GiteaPublisherFactory(scmFacade, createDisplayURLProvider(run,
-                job));
+        GiteaPublisherFactory factory = new GiteaPublisherFactory(scmFacade, createDisplayURLProvider(run, job));
         assertThat(factory.createPublisher(run, TaskListener.NULL)).containsInstanceOf(GiteaChecksPublisher.class);
     }
 
     @Test
     void shouldReturnGiteaChecksPublisherFromJobProjectWithValidGiteaSCMSource() {
-        Run run = mock(Run.class);
-        Job job = mock(Job.class);
+        var run = mock(Run.class);
+        var job = mock(Job.class);
         GiteaSCMSource source = mock(GiteaSCMSource.class);
         StandardCredentials credentials = mock(StandardCredentials.class);
         PullRequestSCMRevision revision = mock(PullRequestSCMRevision.class);
@@ -63,16 +60,15 @@ class GiteaPublisherFactoryTest {
         when(scmFacade.findRevision(source, head)).thenReturn(Optional.of(revision));
         when(scmFacade.findHash(revision)).thenReturn(Optional.of("a1b2c3"));
 
-        GiteaPublisherFactory factory = new GiteaPublisherFactory(scmFacade, createDisplayURLProvider(run,
-                job));
+        GiteaPublisherFactory factory = new GiteaPublisherFactory(scmFacade, createDisplayURLProvider(run, job));
         assertThat(factory.createPublisher(job, TaskListener.NULL)).containsInstanceOf(GiteaChecksPublisher.class);
     }
 
     @Disabled
     @Test
     void shouldCreateGiteaChecksPublisherFromRunForProjectWithValidGitSCM() throws IOException, InterruptedException {
-        Job job = mock(Job.class);
-        Run run = mock(Run.class);
+        var job = mock(Job.class);
+        var run = mock(Run.class);
         GitSCM gitSCM = mock(GitSCM.class);
         UserRemoteConfig config = mock(UserRemoteConfig.class);
         StandardCredentials credentials = mock(StandardCredentials.class);
@@ -89,14 +85,13 @@ class GiteaPublisherFactoryTest {
         when(scmFacade.findGiteaAppCredentials(job, "1")).thenReturn(Optional.of(credentials));
         when(config.getUrl()).thenReturn("https://github.com/jenkinsci/gitea-checks-plugin");
 
-        GiteaPublisherFactory factory = new GiteaPublisherFactory(scmFacade, createDisplayURLProvider(run,
-                job));
+        GiteaPublisherFactory factory = new GiteaPublisherFactory(scmFacade, createDisplayURLProvider(run, job));
         assertThat(factory.createPublisher(run, TaskListener.NULL)).containsInstanceOf(GiteaChecksPublisher.class);
     }
 
     @Test
     void shouldReturnEmptyFromRunForInvalidProject() {
-        Run run = mock(Run.class);
+        var run = mock(Run.class);
         SCMFacade facade = mock(SCMFacade.class);
         DisplayURLProvider urlProvider = mock(DisplayURLProvider.class);
 
@@ -106,13 +101,12 @@ class GiteaPublisherFactoryTest {
 
     @Test
     void shouldCreateNullPublisherFromJobForInvalidProject() {
-        Job job = mock(Job.class);
+        var job = mock(Job.class);
         SCMFacade facade = mock(SCMFacade.class);
         DisplayURLProvider urlProvider = mock(DisplayURLProvider.class);
 
         GiteaPublisherFactory factory = new GiteaPublisherFactory(facade, urlProvider);
-        assertThat(factory.createPublisher(job, TaskListener.NULL))
-                .isNotPresent();
+        assertThat(factory.createPublisher(job, TaskListener.NULL)).isNotPresent();
     }
 
     private DisplayURLProvider createDisplayURLProvider(final Run<?, ?> run, final Job<?, ?> job) {
